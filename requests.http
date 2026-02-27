@@ -1,0 +1,33 @@
+### Crear un nuevo producto (DOP)
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "Vestido de Novia Princesa",
+  "description": "Hermoso vestido de novia corte princesa con detalles de encaje.",
+  "price": 25000,
+  "currency": "DOP",
+  "imageUrl": "https://example.com/vestido1.jpg",
+  "category": "Vestidos de Novia",
+  "isActive": true
+}
+
+###
+
+### Crear un nuevo producto (USD) sin campos opcionales
+POST http://localhost:3000/products
+Content-Type: application/json
+
+{
+  "name": "Velo de Novia Largo",
+  "price": 150,
+  "currency": "USD"
+}
+
+###
+
+### Obtener todos los productos
+GET http://localhost:3000/products
+
+### Obtener producto por ID (Reemplazar con un ID real)
+GET http://localhost:3000/products/1
