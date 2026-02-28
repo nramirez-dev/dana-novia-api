@@ -31,3 +31,21 @@ GET http://localhost:3000/products
 
 ### Obtener producto por ID (Reemplazar con un ID real)
 GET http://localhost:3000/products/1
+
+###
+
+### CATEGORÍAS
+
+### Crear una nueva categoria
+POST http://localhost:3000/categories
+Content-Type: application/json
+
+{
+  "name": "Vestidos de Boda",
+  "slug": "vestidos-de-boda"
+}
+
+###
+
+### Obtener todas las categorias
+GET http://localhost:3000/categories

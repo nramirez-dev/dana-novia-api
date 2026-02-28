@@ -15,19 +15,33 @@ export class ProductsService {
         price: dto.price,
         currency: dto.currency,
         imageUrl: dto.imageUrl,
-        category: dto.category,
+        categories: {
+          connect: dto.categoryIds.map(id => ({ id }))
+        },
+        occasions: dto.occasionIds ? {
+          connect: dto.occasionIds.map(id => ({ id }))
+        } : undefined,
         isActive: dto.isActive ?? true,
       },
     });
   }
 
   async findAll() {
-    return this.prisma.product.findMany();
+    return this.prisma.product.findMany({
+      include: {
+        categories: true,
+        occasions: true,
+      }
+    });
   }
 
   async findOne(id: string) {
     const product = await this.prisma.product.findUnique({
       where: { id },
+      include: {
+        categories: true,
+        occasions: true,
+      }
     });
 
     if (!product) {
@@ -38,9 +52,20 @@ export class ProductsService {
   }
 
   async update(id: string, dto: UpdateProductDto) {
+    const data: any = { ...dto };
+    if (dto.categoryIds) {
+      data.categories = { set: dto.categoryIds.map(id => ({ id })) };
+      delete data.categoryIds;
+    }
+
+    if (dto.occasionIds) {
+      data.occasions = { set: dto.occasionIds.map(id => ({ id })) };
+      delete data.occasionIds;
+    }
+
     return this.prisma.product.update({
       where: { id },
-      data: dto,
+      data,
     });
   }
 
