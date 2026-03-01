@@ -13,12 +13,29 @@ export class OccasionsService {
     });
   }
 
-  async findAll() {
-    return this.prisma.occasion.findMany({
-      include: {
-        products: true,
+  async findAll(page: number = 1, limit: number = 10) {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await Promise.all([
+      this.prisma.occasion.findMany({
+        skip,
+        take: limit,
+        include: {
+          products: true,
+        },
+      }),
+      this.prisma.occasion.count(),
+    ]);
+
+    return {
+      data,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
       },
-    });
+    };
   }
 
   async findOne(id: string) {

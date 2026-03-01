@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -21,8 +22,23 @@ export class ProductsController {
   }
 
   @Get()
-  findAll() {
-    return this.productsService.findAll();
+  findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('categoryId') categoryId?: string,
+    @Query('occasionId') occasionId?: string,
+    @Query('search') search?: string,
+  ) {
+    const pageNumber = parseInt(page || '1', 10);
+    const limitNumber = parseInt(limit || '10', 10);
+
+    return this.productsService.findAll(
+      isNaN(pageNumber) ? 1 : pageNumber,
+      isNaN(limitNumber) ? 10 : limitNumber,
+      categoryId,
+      occasionId,
+      search,
+    );
   }
 
   @Get(':id')

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { OccasionsService } from './occasions.service';
 import { CreateOccasionDto } from './dto/create-occasion.dto';
 import { UpdateOccasionDto } from './dto/update-occasion.dto';
@@ -13,8 +13,17 @@ export class OccasionsController {
   }
 
   @Get()
-  findAll() {
-    return this.occasionsService.findAll();
+  findAll(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    const pageNumber = parseInt(page || '1', 10);
+    const limitNumber = parseInt(limit || '10', 10);
+
+    return this.occasionsService.findAll(
+      isNaN(pageNumber) ? 1 : pageNumber,
+      isNaN(limitNumber) ? 10 : limitNumber,
+    );
   }
 
   @Get(':id')
