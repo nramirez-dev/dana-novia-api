@@ -2,15 +2,18 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
+import slugify from 'slugify';
 
 @Injectable()
 export class ProductsService {
   constructor(private prisma: PrismaService) { }
 
   async create(dto: CreateProductDto) {
+    const slug = slugify(dto.name, { lower: true, strict: true });
     return this.prisma.product.create({
       data: {
         name: dto.name,
+        slug: slug,
         description: dto.description,
         price: dto.price,
         currency: dto.currency,
@@ -71,9 +74,14 @@ export class ProductsService {
     };
   }
 
-  async findOne(id: string) {
-    const product = await this.prisma.product.findUnique({
-      where: { id },
+  async findOne(identifier: string) {
+    const product = await this.prisma.product.findFirst({
+      where: {
+        OR: [
+          { id: identifier },
+          { slug: identifier }
+        ]
+      },
       include: {
         categories: true,
         occasions: true,
